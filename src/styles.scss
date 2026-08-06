@@ -1,0 +1,202 @@
+/* ============================================================
+   Thato Kekana CV site global styles
+   Palette: terminal dark + pass-green + electric cyan
+   ============================================================ */
+
+:root {
+  --bg: #0a0f16;
+  --bg-soft: #0d141d;
+  --panel: #101823;
+  --panel-2: #131d2b;
+  --line: #1e2a3a;
+  --ink: #e8f0f7;
+  --muted: #7e8fa3;
+  --pass: #43d675;
+  --pass-dim: rgba(67, 214, 117, 0.12);
+  --accent: #37b6ff;
+  --accent-dim: rgba(55, 182, 255, 0.12);
+  --warn: #e5b84b;
+  --fail: #f0616d;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --radius: 12px;
+  --nav-h: 64px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Subtle blueprint grid over the whole page */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(126, 143, 163, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(126, 143, 163, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  z-index: 0;
+}
+
+::selection {
+  background: var(--pass);
+  color: #06240f;
+}
+
+/* Slim terminal-green scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2b3c52;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  line-height: 1.15;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* Shared layout helpers */
+.container {
+  width: min(1120px, 92vw);
+  margin-inline: auto;
+  position: relative;
+  z-index: 1;
+}
+
+section {
+  padding: 96px 0;
+  position: relative;
+}
+
+/* describe('…') section headings */
+.section-head {
+  margin-bottom: 48px;
+}
+
+.section-head .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--pass);
+  display: block;
+  margin-bottom: 10px;
+
+  .punct { color: var(--muted); }
+  .str { color: var(--warn); }
+}
+
+.section-head h2 {
+  font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.section-head p.lede {
+  color: var(--muted);
+  max-width: 640px;
+  margin-top: 12px;
+}
+
+/* Scroll-reveal (driven by appReveal directive) */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 13px 22px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--pass);
+  color: #06240f;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(67, 214, 117, 0.35);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 640px) {
+  section { padding: 64px 0; }
+}
