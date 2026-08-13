@@ -8,6 +8,7 @@ import { AiLabComponent } from './sections/ai-lab.component';
 import { ExperienceComponent } from './sections/experience.component';
 import { EducationComponent } from './sections/education.component';
 import { FooterComponent } from './sections/footer.component';
+import { BotComponent } from './bot/bot.component';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ import { FooterComponent } from './sections/footer.component';
     ExperienceComponent,
     EducationComponent,
     FooterComponent,
+    BotComponent,
   ],
   template: `
     <app-nav />
@@ -35,6 +37,7 @@ import { FooterComponent } from './sections/footer.component';
       <app-education />
     </main>
     <app-footer />
+    <app-bot />
   `,
 })
 export class AppComponent {}
