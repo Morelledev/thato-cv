@@ -8,11 +8,12 @@ import {
 } from '@angular/core';
 import { SKILL_GROUPS } from '../data/resume.data';
 import { RevealDirective } from '../shared/reveal.directive';
+import { SpotlightDirective } from '../shared/spotlight.directive';
 
 @Component({
   selector: 'app-skills',
   standalone: true,
-  imports: [RevealDirective],
+  imports: [RevealDirective, SpotlightDirective],
   template: `
     <section id="skills">
       <div class="container">
@@ -34,6 +35,7 @@ import { RevealDirective } from '../shared/reveal.directive';
               class="group"
               [class.featured]="group.featured"
               appReveal
+              appSpotlight
               [revealDelay]="gi * 100"
             >
               <header>
@@ -45,7 +47,7 @@ import { RevealDirective } from '../shared/reveal.directive';
               </header>
 
               <ul>
-                @for (skill of group.skills; track skill.name) {
+                @for (skill of group.skills; track skill.name; let si = $index) {
                   <li>
                     <div class="row">
                       <span class="name">{{ skill.name }}</span>
@@ -56,6 +58,7 @@ import { RevealDirective } from '../shared/reveal.directive';
                         class="fill"
                         [class.featured-fill]="group.featured"
                         [style.width.%]="armed() ? skill.level : 0"
+                        [style.transition-delay.ms]="si * 110"
                       ></div>
                     </div>
                   </li>
@@ -79,13 +82,18 @@ import { RevealDirective } from '../shared/reveal.directive';
     .group {
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: var(--radius);
+      border-radius: var(--radius-lg);
       padding: 28px;
-      transition: border-color 0.3s ease, transform 0.3s ease;
+      box-shadow: inset 0 1px 0 rgba(232, 240, 247, 0.04);
+      transition:
+        border-color 0.4s var(--ease-out),
+        transform 0.55s var(--ease-spring),
+        box-shadow 0.55s var(--ease-spring);
 
       &:hover {
-        border-color: #2b3c52;
+        border-color: var(--line-bright);
         transform: translateY(-4px);
+        box-shadow: inset 0 1px 0 rgba(232, 240, 247, 0.04), var(--shadow-soft);
       }
 
       &.featured {
@@ -152,10 +160,27 @@ import { RevealDirective } from '../shared/reveal.directive';
       }
 
       .fill {
+        position: relative;
         height: 100%;
         border-radius: 4px;
         background: linear-gradient(90deg, var(--accent), #6ecbff);
-        transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: width 1.4s var(--ease-out);
+        overflow: hidden;
+
+        /* Soft sheen sliding along the filled portion */
+        &::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.35) 50%, transparent 80%);
+          transform: translateX(-100%);
+          animation: meter-sheen 3.2s var(--ease-out) 1.6s infinite;
+        }
+      }
+
+      @keyframes meter-sheen {
+        0% { transform: translateX(-100%); }
+        45%, 100% { transform: translateX(100%); }
       }
 
       .featured-fill {

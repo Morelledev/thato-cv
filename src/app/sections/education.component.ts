@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { QUALIFICATIONS } from '../data/resume.data';
 import { RevealDirective } from '../shared/reveal.directive';
+import { SpotlightDirective } from '../shared/spotlight.directive';
 
 @Component({
   selector: 'app-education',
   standalone: true,
-  imports: [RevealDirective],
+  imports: [RevealDirective, SpotlightDirective],
   template: `
     <section id="education">
       <div class="container">
@@ -18,7 +19,7 @@ import { RevealDirective } from '../shared/reveal.directive';
 
         <div class="cards">
           @for (q of quals; track q.title; let i = $index) {
-            <article class="card" appReveal [revealDelay]="i * 100">
+            <article class="card" appReveal appSpotlight [revealDelay]="i * 100">
               <span class="kind" [class.degree]="q.kind === 'degree'">
                 {{ q.kind === 'degree' ? '🎓 degree' : '✓ certified' }}
               </span>
@@ -42,16 +43,21 @@ import { RevealDirective } from '../shared/reveal.directive';
       position: relative;
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: var(--radius);
+      border-radius: var(--radius-lg);
       padding: 26px 24px 22px;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      transition: transform 0.3s ease, border-color 0.3s ease;
+      box-shadow: inset 0 1px 0 rgba(232, 240, 247, 0.04);
+      transition:
+        transform 0.55s var(--ease-spring),
+        border-color 0.4s var(--ease-out),
+        box-shadow 0.55s var(--ease-spring);
 
       &:hover {
         transform: translateY(-5px);
         border-color: rgba(67, 214, 117, 0.4);
+        box-shadow: inset 0 1px 0 rgba(232, 240, 247, 0.04), 0 16px 40px rgba(2, 8, 16, 0.4);
       }
 
       .kind {

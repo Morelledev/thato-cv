@@ -39,7 +39,7 @@ interface TermLine {
 
           <div class="ctas">
             <a class="btn btn-primary" [href]="cv" download>
-              <span aria-hidden="true">⇩</span> Download CV
+              Download CV <span class="ico" aria-hidden="true">⇩</span>
             </a>
             <button class="btn btn-ghost" type="button" (click)="scrollTo('experience')">
               npx view --experience
@@ -53,6 +53,7 @@ interface TermLine {
           </div>
         </div>
 
+        <div class="term-shell">
         <div class="term" role="img" aria-label="Terminal running a Playwright test of Thato's career where every test passes">
           <div class="term-bar">
             <span class="dot red"></span>
@@ -85,6 +86,7 @@ interface TermLine {
             }
           </div>
         </div>
+        </div>
       </div>
 
       <button class="scroll-hint" type="button" (click)="scrollTo('about')" aria-label="Scroll to about section">
@@ -108,6 +110,7 @@ interface TermLine {
       filter: blur(110px);
       opacity: 0.16;
       pointer-events: none;
+      animation: drift 14s ease-in-out infinite alternate;
     }
 
     .glow-green {
@@ -124,6 +127,13 @@ interface TermLine {
       background: var(--accent);
       bottom: -140px;
       left: -100px;
+      animation-delay: -7s;
+      animation-duration: 18s;
+    }
+
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to { transform: translate(-50px, 36px) scale(1.12); }
     }
 
     .hero-grid {
@@ -148,9 +158,11 @@ interface TermLine {
 
       .accent {
         color: transparent;
-        background: linear-gradient(100deg, var(--pass), var(--accent));
+        background: linear-gradient(100deg, var(--pass), var(--accent), var(--pass));
+        background-size: 220% 100%;
         background-clip: text;
         -webkit-background-clip: text;
+        animation: hue-slide 7s ease-in-out infinite alternate;
       }
     }
 
@@ -178,6 +190,11 @@ interface TermLine {
       animation: fade-up 0.7s ease 0.4s both;
     }
 
+    @keyframes hue-slide {
+      from { background-position: 0% 0; }
+      to { background-position: 100% 0; }
+    }
+
     .chip {
       font-family: var(--font-mono);
       font-size: 0.75rem;
@@ -188,6 +205,17 @@ interface TermLine {
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      background: rgba(16, 24, 35, 0.4);
+      transition:
+        border-color 0.3s var(--ease-out),
+        color 0.3s var(--ease-out),
+        transform 0.45s var(--ease-spring);
+
+      &:hover {
+        border-color: var(--line-bright);
+        color: var(--ink);
+        transform: translateY(-2px);
+      }
 
       .dot {
         width: 7px;
@@ -198,14 +226,30 @@ interface TermLine {
       }
     }
 
-    /* Terminal */
+    /* Terminal — double-bezel: glass plate sitting in a machined tray */
+    .term-shell {
+      padding: 7px;
+      background: rgba(232, 240, 247, 0.03);
+      border: 1px solid rgba(232, 240, 247, 0.07);
+      border-radius: calc(var(--radius) + 7px);
+      box-shadow: var(--shadow-deep);
+      animation: term-in 0.8s var(--ease-out) 0.25s both;
+      transition: transform 0.6s var(--ease-spring), box-shadow 0.6s var(--ease-spring);
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 40px 90px rgba(2, 6, 12, 0.7), 0 0 40px rgba(67, 214, 117, 0.06);
+      }
+    }
+
     .term {
       background: rgba(13, 20, 30, 0.92);
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(67, 214, 117, 0.06);
+      box-shadow:
+        inset 0 1px 0 rgba(232, 240, 247, 0.06),
+        0 0 0 1px rgba(67, 214, 117, 0.05);
       overflow: hidden;
-      animation: term-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
     }
 
     .term-bar {

@@ -26,8 +26,10 @@ import { STATS } from '../data/resume.data';
   styles: `
     .strip {
       border-block: 1px solid var(--line);
-      background: rgba(16, 24, 35, 0.6);
-      padding: 44px 0;
+      background:
+        radial-gradient(ellipse at 50% 120%, rgba(67, 214, 117, 0.05), transparent 60%),
+        rgba(16, 24, 35, 0.6);
+      padding: 48px 0;
       position: relative;
       z-index: 1;
     }
@@ -43,6 +45,13 @@ import { STATS } from '../data/resume.data';
       flex-direction: column;
       gap: 6px;
       text-align: center;
+      transition: transform 0.5s var(--ease-spring);
+
+      &:hover { transform: translateY(-3px); }
+
+      &:not(:first-child) {
+        border-left: 1px solid rgba(30, 42, 58, 0.7);
+      }
     }
 
     .value {
@@ -52,6 +61,7 @@ import { STATS } from '../data/resume.data';
       color: var(--pass);
       line-height: 1;
       font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 32px rgba(67, 214, 117, 0.35);
 
       .suffix { color: var(--accent); }
     }
@@ -66,6 +76,7 @@ import { STATS } from '../data/resume.data';
 
     @media (max-width: 800px) {
       .grid { grid-template-columns: repeat(2, 1fr); }
+      .stat:nth-child(3) { border-left: none; }
     }
   `,
 })

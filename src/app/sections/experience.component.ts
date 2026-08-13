@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { JOBS } from '../data/resume.data';
 import { RevealDirective } from '../shared/reveal.directive';
+import { SpotlightDirective } from '../shared/spotlight.directive';
 
 @Component({
   selector: 'app-experience',
   standalone: true,
-  imports: [RevealDirective],
+  imports: [RevealDirective, SpotlightDirective],
   template: `
     <section id="experience">
       <div class="container">
@@ -21,7 +22,7 @@ import { RevealDirective } from '../shared/reveal.directive';
             <article class="entry" appReveal [revealDelay]="60">
               <div class="node" [class.current]="job.current"></div>
 
-              <div class="card">
+              <div class="card" appSpotlight>
                 <header>
                   <div>
                     <h3>{{ job.role }}</h3>
@@ -98,13 +99,18 @@ import { RevealDirective } from '../shared/reveal.directive';
     .card {
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: var(--radius);
+      border-radius: var(--radius-lg);
       padding: 26px 28px;
-      transition: border-color 0.3s ease, transform 0.3s ease;
+      box-shadow: inset 0 1px 0 rgba(232, 240, 247, 0.04);
+      transition:
+        border-color 0.4s var(--ease-out),
+        transform 0.55s var(--ease-spring),
+        box-shadow 0.55s var(--ease-spring);
 
       &:hover {
-        border-color: #2b3c52;
+        border-color: var(--line-bright);
         transform: translateX(6px);
+        box-shadow: inset 0 1px 0 rgba(232, 240, 247, 0.04), var(--shadow-soft);
       }
     }
 

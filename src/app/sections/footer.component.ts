@@ -19,13 +19,13 @@ import { RevealDirective } from '../shared/reveal.directive';
 
           <div class="actions">
             <a class="btn btn-primary" [href]="'mailto:' + email">
-              <span aria-hidden="true">✉</span> {{ email }}
+              {{ email }} <span class="ico" aria-hidden="true">✉</span>
             </a>
             <a class="btn btn-ghost" [href]="'tel:' + phoneHref">
-              <span aria-hidden="true">☏</span> {{ phone }}
+              {{ phone }} <span class="ico" aria-hidden="true">☏</span>
             </a>
             <a class="btn btn-ghost" [href]="cv" download>
-              <span aria-hidden="true">⇩</span> Download CV
+              Download CV <span class="ico" aria-hidden="true">⇩</span>
             </a>
           </div>
 

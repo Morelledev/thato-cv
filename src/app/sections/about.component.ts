@@ -53,10 +53,11 @@ import { RevealDirective } from '../shared/reveal.directive';
     .frame {
       position: relative;
       border: 1px solid var(--line);
-      border-radius: var(--radius);
+      border-radius: var(--radius-lg);
       padding: 14px;
       background: var(--panel);
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+      box-shadow: inset 0 1px 0 rgba(232, 240, 247, 0.05), var(--shadow-soft);
+      transition: transform 0.6s var(--ease-spring), box-shadow 0.6s var(--ease-spring);
 
       img {
         display: block;
@@ -64,10 +65,21 @@ import { RevealDirective } from '../shared/reveal.directive';
         height: auto;
         border-radius: 8px;
         filter: grayscale(1) contrast(1.05);
-        transition: filter 0.4s ease;
+        transition: filter 0.5s var(--ease-out), transform 0.8s var(--ease-spring);
       }
 
-      &:hover img { filter: grayscale(0.4) contrast(1.05); }
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow:
+          inset 0 1px 0 rgba(232, 240, 247, 0.05),
+          0 30px 70px rgba(2, 6, 12, 0.55),
+          0 0 40px rgba(67, 214, 117, 0.08);
+
+        img {
+          filter: grayscale(0.35) contrast(1.05);
+          transform: scale(1.03);
+        }
+      }
 
       .corner {
         position: absolute;
@@ -83,7 +95,7 @@ import { RevealDirective } from '../shared/reveal.directive';
         left: -1px;
         border-top-width: 2px;
         border-left-width: 2px;
-        border-top-left-radius: var(--radius);
+        border-top-left-radius: var(--radius-lg);
       }
 
       .br {
@@ -91,7 +103,7 @@ import { RevealDirective } from '../shared/reveal.directive';
         right: -1px;
         border-bottom-width: 2px;
         border-right-width: 2px;
-        border-bottom-right-radius: var(--radius);
+        border-bottom-right-radius: var(--radius-lg);
       }
     }
 

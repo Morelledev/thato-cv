@@ -9,6 +9,7 @@
   --panel: #101823;
   --panel-2: #131d2b;
   --line: #1e2a3a;
+  --line-bright: #2b3c52;
   --ink: #e8f0f7;
   --muted: #7e8fa3;
   --pass: #43d675;
@@ -19,11 +20,20 @@
   --fail: #f0616d;
 
   --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --font-body: 'Geist', 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   --radius: 12px;
+  --radius-lg: 18px;
   --nav-h: 64px;
+
+  /* Motion tokens — heavy, springy easing everywhere */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* Tinted shadows that carry the background hue */
+  --shadow-soft: 0 24px 60px rgba(3, 8, 14, 0.5);
+  --shadow-deep: 0 30px 80px rgba(2, 6, 12, 0.6);
 }
 
 * {
@@ -59,6 +69,17 @@ body::before {
   z-index: 0;
 }
 
+/* Film-grain overlay — breaks digital flatness on every surface */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 ::selection {
   background: var(--pass);
   color: #06240f;
@@ -76,12 +97,17 @@ body::before {
   border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2b3c52;
+  background: var(--line-bright);
 }
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
   line-height: 1.15;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 a {
@@ -93,6 +119,13 @@ button {
   font-family: inherit;
 }
 
+/* Visible focus for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
 /* Shared layout helpers */
 .container {
   width: min(1120px, 92vw);
@@ -102,13 +135,13 @@ button {
 }
 
 section {
-  padding: 96px 0;
+  padding: 110px 0 118px;
   position: relative;
 }
 
 /* describe('…') section headings */
 .section-head {
-  margin-bottom: 48px;
+  margin-bottom: 56px;
 }
 
 .section-head .eyebrow {
@@ -130,20 +163,25 @@ section {
 
 .section-head p.lede {
   color: var(--muted);
-  max-width: 640px;
+  max-width: 620px;
   margin-top: 12px;
 }
 
 /* Scroll-reveal (driven by appReveal directive) */
 .reveal {
   opacity: 0;
-  transform: translateY(26px);
-  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(30px);
+  filter: blur(6px);
+  transition:
+    opacity 0.9s var(--ease-out),
+    transform 0.9s var(--ease-out),
+    filter 0.9s var(--ease-out);
 }
 
 .reveal.in {
   opacity: 1;
   transform: none;
+  filter: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -151,6 +189,7 @@ section {
   .reveal {
     opacity: 1;
     transform: none;
+    filter: none;
     transition: none;
   }
   *, *::before, *::after {
@@ -162,6 +201,7 @@ section {
 
 /* Buttons */
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -169,34 +209,110 @@ section {
   font-size: 0.9rem;
   font-weight: 500;
   padding: 13px 22px;
-  border-radius: 10px;
+  border-radius: 999px;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  overflow: hidden;
+  transition:
+    transform 0.45s var(--ease-spring),
+    box-shadow 0.45s var(--ease-spring),
+    background 0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out),
+    color 0.3s var(--ease-out);
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+/* Nested "button-in-button" icon capsule */
+.btn .ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(6, 36, 15, 0.16);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  transition: transform 0.45s var(--ease-spring);
+}
+
+.btn-ghost .ico {
+  background: rgba(232, 240, 247, 0.07);
+}
+
+.btn:hover .ico {
+  transform: translate(2px, -1px) scale(1.08);
 }
 
 .btn-primary {
   background: var(--pass);
   color: #06240f;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 4px 18px rgba(67, 214, 117, 0.18);
+}
+
+/* Sheen sweep across the primary button on hover */
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+  transform: translateX(-110%);
+  transition: transform 0.7s var(--ease-out);
+  pointer-events: none;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(67, 214, 117, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 10px 32px rgba(67, 214, 117, 0.35);
+
+  &::before { transform: translateX(110%); }
+}
+
+.btn-primary:hover:active {
+  transform: translateY(-1px) scale(0.97);
 }
 
 .btn-ghost {
-  background: transparent;
+  background: rgba(16, 24, 35, 0.4);
   color: var(--ink);
   border-color: var(--line);
+  backdrop-filter: blur(6px);
 }
 
 .btn-ghost:hover {
   border-color: var(--accent);
   color: var(--accent);
   transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(55, 182, 255, 0.12);
+}
+
+/* Cursor-tracking spotlight surface (driven by appSpotlight directive) */
+.spot {
+  position: relative;
+}
+
+.spot::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out);
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(67, 214, 117, 0.08),
+    transparent 65%
+  );
+}
+
+.spot:hover::before {
+  opacity: 1;
 }
 
 @media (max-width: 640px) {
-  section { padding: 64px 0; }
+  section { padding: 72px 0; }
 }

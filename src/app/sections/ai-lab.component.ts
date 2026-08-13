@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { AI_CARDS } from '../data/resume.data';
 import { RevealDirective } from '../shared/reveal.directive';
+import { SpotlightDirective } from '../shared/spotlight.directive';
 
 @Component({
   selector: 'app-ai-lab',
   standalone: true,
-  imports: [RevealDirective],
+  imports: [RevealDirective, SpotlightDirective],
   template: `
     <section id="ai-lab">
       <div class="container">
@@ -23,7 +24,7 @@ import { RevealDirective } from '../shared/reveal.directive';
 
         <div class="cards">
           @for (card of cards; track card.title; let i = $index) {
-            <article class="card" appReveal [revealDelay]="(i % 3) * 110">
+            <article class="card" appReveal appSpotlight [revealDelay]="(i % 3) * 110">
               <span class="icon" aria-hidden="true">{{ card.icon }}</span>
               <h3>{{ card.title }}</h3>
               <p>{{ card.body }}</p>
@@ -45,18 +46,22 @@ import { RevealDirective } from '../shared/reveal.directive';
       position: relative;
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: var(--radius);
+      border-radius: var(--radius-lg);
       padding: 26px;
       overflow: hidden;
-      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: inset 0 1px 0 rgba(232, 240, 247, 0.04);
+      transition:
+        transform 0.55s var(--ease-spring),
+        border-color 0.4s var(--ease-out),
+        box-shadow 0.55s var(--ease-spring);
 
       &:hover {
         transform: translateY(-5px);
         border-color: rgba(55, 182, 255, 0.45);
-        box-shadow: 0 16px 44px rgba(0, 0, 0, 0.35);
+        box-shadow: inset 0 1px 0 rgba(232, 240, 247, 0.04), 0 16px 44px rgba(2, 8, 16, 0.45);
 
         .trace { transform: scaleX(1); }
-        .icon { color: var(--accent); }
+        .icon { color: var(--accent); transform: translateY(-2px); }
       }
 
       .icon {
@@ -65,7 +70,7 @@ import { RevealDirective } from '../shared/reveal.directive';
         color: var(--pass);
         display: block;
         margin-bottom: 16px;
-        transition: color 0.3s ease;
+        transition: color 0.3s var(--ease-out), transform 0.45s var(--ease-spring);
       }
 
       h3 {
