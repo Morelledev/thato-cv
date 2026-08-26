@@ -23,6 +23,7 @@
     "json-server": "^1.0.0-beta.5",
     "marked": "^17.0.1",
     "rxjs": "~7.8.0",
+    "three": "^0.185.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },
@@ -36,6 +37,7 @@
     "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.58.1",
     "@types/jasmine": "~5.1.0",
+    "@types/three": "^0.185.4",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
     "eslint": "^9.39.2",

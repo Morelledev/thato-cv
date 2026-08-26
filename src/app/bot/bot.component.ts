@@ -6,11 +6,14 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  effect,
   inject,
   signal,
 } from '@angular/core';
 import { PROFILE } from '../data/resume.data';
 import { IDLE_FACTS, SUGGESTIONS, botAnswer } from './bot-brain';
+import { KhumoService } from './khumo.service';
+import { Khumo3dComponent } from './khumo3d.component';
 
 interface ChatMsg {
   from: 'bot' | 'user';
@@ -27,6 +30,11 @@ const QUIPS: Record<string, string> = {
   education: `ISTQB Advanced — that's the deep test-design one.`,
 };
 
+/** First words after the terminal renders him into existence. */
+const INTRO_QUIP =
+  `rendered and ready! I'm Khumo, Thato's AI sidekick. ` +
+  `I know his CV by heart and I talk software testing. Click me to chat.`;
+
 /** Cycled while Khumo bounces at the contact section, for as long as the user stays. */
 const CONTACT_HYPE = [
   `⚡ this is the part where you hire him.`,
@@ -40,8 +48,10 @@ const CONTACT_HYPE = [
 @Component({
   selector: 'app-bot',
   standalone: true,
+  imports: [Khumo3dComponent],
   template: `
-    <!-- Roaming mascot -->
+    <!-- Roaming mascot; exists only after the hero terminal renders him -->
+    @if (summoned()) {
     <div
       class="mascot-rail"
       [style.transform]="'translateX(' + tx() + 'px)'"
@@ -62,6 +72,9 @@ const CONTACT_HYPE = [
         aria-label="Chat with Khumo"
         (click)="toggle()"
       >
+        @if (use3d()) {
+          <app-khumo-3d (failed)="use3d.set(false)" />
+        } @else {
         <svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
           <!-- antenna -->
           <line class="antenna" x1="32" y1="10" x2="32" y2="18" />
@@ -79,8 +92,10 @@ const CONTACT_HYPE = [
           <rect class="foot" x="19" y="52" width="9" height="5" rx="2.5" />
           <rect class="foot" x="36" y="52" width="9" height="5" rx="2.5" />
         </svg>
+        }
       </button>
     </div>
+    }
 
     <!-- Chat panel -->
     @if (open()) {
@@ -148,8 +163,21 @@ const CONTACT_HYPE = [
       right: 18px;
       pointer-events: auto;
       transition: transform 2.6s var(--ease-spring), opacity 0.3s var(--ease-out);
+      animation: spawn 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 
       &.hidden { opacity: 0; pointer-events: none; }
+    }
+
+    /* Materialise: the render command just brought him into existence */
+    @keyframes spawn {
+      from {
+        opacity: 0;
+        transform: translateY(26px) scale(0.2);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .mascot {
@@ -173,7 +201,8 @@ const CONTACT_HYPE = [
       animation: bob 0.5s ease-in-out infinite;
     }
 
-    .flipped .mascot svg { transform: scaleX(-1); }
+    .flipped .mascot svg,
+    .flipped .mascot app-khumo-3d { transform: scaleX(-1); }
 
     @keyframes breathe {
       0%, 100% { transform: translateY(0) scale(1); }
@@ -502,6 +531,7 @@ export class BotComponent implements OnInit, OnDestroy {
   walking = signal(false);
   flipped = signal(false);
   excited = signal(false);
+  use3d = signal(false);
   quip = signal('');
   open = signal(false);
   messages = signal<ChatMsg[]>([]);
@@ -512,6 +542,62 @@ export class BotComponent implements OnInit, OnDestroy {
   @ViewChild('body') private body?: ElementRef<HTMLElement>;
 
   private zone = inject(NgZone);
+  private khumoService = inject(KhumoService);
+  protected readonly summoned = this.khumoService.summoned;
+  private spawnHandled = false;
+  private introUntil = 0;
+
+  /** Once summoned: pop in, introduce himself, then settle into idle life. */
+  private readonly onSummon = effect(() => {
+    if (!this.summoned() || this.spawnHandled) {
+      return;
+    }
+    this.spawnHandled = true;
+    this.introUntil = Date.now() + 16000;
+    this.timers.push(
+      setTimeout(() => {
+        this.quip.set(INTRO_QUIP);
+        clearTimeout(this.quipTimer);
+        this.quipTimer = setTimeout(() => this.zone.run(() => this.quip.set('')), 14500);
+      }, 900),
+    );
+    if (!this.reduced) {
+      this.zone.runOutsideAngular(() => this.scheduleWander());
+    }
+    this.zone.runOutsideAngular(() => this.scheduleChatter(16000));
+  });
+
+  /** Messages other components ask Khumo to deliver (e.g. the bug hunt). */
+  private readonly onAnnouncement = effect(() => {
+    const msg = this.khumoService.announcement();
+    if (!msg) {
+      return;
+    }
+    if (!this.summoned()) {
+      // Not rendered yet: leave the announcement pending. This effect
+      // also tracks summoned(), so it re-fires and delivers on spawn.
+      return;
+    }
+    this.khumoService.clearAnnouncement();
+
+    // Never talk over the spawn introduction: if it is showing (or about
+    // to, when this effect wins the race at summon time), wait it out.
+    const now = Date.now();
+    const wait = !this.spawnHandled ? 16500 : Math.max(0, this.introUntil - now);
+    this.timers.push(
+      setTimeout(() => {
+        this.zone.run(() => {
+          if (this.open()) {
+            return;
+          }
+          this.quip.set(msg);
+          clearTimeout(this.quipTimer);
+          this.quipTimer = setTimeout(() => this.zone.run(() => this.quip.set('')), 14000);
+        });
+      }, wait),
+    );
+  });
+
   private timers: ReturnType<typeof setTimeout>[] = [];
   private wanderTimer?: ReturnType<typeof setTimeout>;
   private quipTimer?: ReturnType<typeof setTimeout>;
@@ -526,10 +612,10 @@ export class BotComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!this.reduced) {
-      this.zone.runOutsideAngular(() => this.scheduleWander());
-    }
-    this.zone.runOutsideAngular(() => this.scheduleChatter(9000));
+    // 3D Khumo for everyone except reduced-motion users; falls back to
+    // the SVG automatically if WebGL is unavailable. Wandering and idle
+    // chatter only begin once the hero terminal summons him.
+    this.use3d.set(!this.reduced);
   }
 
   ngOnDestroy(): void {
@@ -556,9 +642,9 @@ export class BotComponent implements OnInit, OnDestroy {
         this.factIdx++;
         this.zone.run(() => this.quip.set(fact));
         clearTimeout(this.quipTimer);
-        this.quipTimer = setTimeout(() => this.zone.run(() => this.quip.set('')), 9000);
+        this.quipTimer = setTimeout(() => this.zone.run(() => this.quip.set('')), 13000);
       }
-      this.scheduleChatter(17000 + Math.random() * 13000);
+      this.scheduleChatter(20000 + Math.random() * 14000);
     }, delay);
   }
 
@@ -600,7 +686,7 @@ export class BotComponent implements OnInit, OnDestroy {
 
   @HostListener('window:scroll')
   onScroll(): void {
-    if (this.open()) {
+    if (!this.summoned() || this.open()) {
       return;
     }
     const ids = [...Object.keys(QUIPS), 'contact'];
@@ -626,7 +712,7 @@ export class BotComponent implements OnInit, OnDestroy {
         this.seenQuips.add(current);
         this.quip.set(QUIPS[current]);
         clearTimeout(this.quipTimer);
-        this.quipTimer = setTimeout(() => this.zone.run(() => this.quip.set('')), 7000);
+        this.quipTimer = setTimeout(() => this.zone.run(() => this.quip.set('')), 12000);
       }
     }
   }

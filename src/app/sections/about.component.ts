@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
 import { PROFILE } from '../data/resume.data';
+import { GlyphRainComponent } from '../shared/glyph-rain.component';
 import { RevealDirective } from '../shared/reveal.directive';
 
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [RevealDirective],
+  imports: [GlyphRainComponent, RevealDirective],
   template: `
     <section id="about">
+      <app-glyph-rain>
       <div class="container">
         <div class="section-head" appReveal>
           <span class="eyebrow">
@@ -35,9 +37,26 @@ import { RevealDirective } from '../shared/reveal.directive';
           </div>
         </div>
       </div>
+      </app-glyph-rain>
     </section>
   `,
   styles: `
+    /* The section's padding moves onto the rain wrapper so the
+       glyph stream covers the full band, not just the content box. */
+    section {
+      padding: 0;
+    }
+
+    app-glyph-rain {
+      padding: 96px 0;
+    }
+
+    @media (max-width: 640px) {
+      app-glyph-rain {
+        padding: 64px 0;
+      }
+    }
+
     .grid {
       display: grid;
       grid-template-columns: 300px 1fr;

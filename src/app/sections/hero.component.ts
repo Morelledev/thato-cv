@@ -7,7 +7,10 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { KhumoService } from '../bot/khumo.service';
 import { PROFILE, TERMINAL_SCRIPT } from '../data/resume.data';
+import { HeroFieldComponent } from '../shared/hero-field.component';
+import { TiltDirective } from '../shared/tilt.directive';
 
 interface TermLine {
   type: string;
@@ -19,8 +22,10 @@ interface TermLine {
 @Component({
   selector: 'app-hero',
   standalone: true,
+  imports: [HeroFieldComponent, TiltDirective],
   template: `
     <section class="hero" id="top">
+      <app-hero-field />
       <div class="glow glow-green"></div>
       <div class="glow glow-blue"></div>
 
@@ -53,7 +58,7 @@ interface TermLine {
           </div>
         </div>
 
-        <div class="term-shell">
+        <div class="term-shell" appTilt>
         <div class="term" role="img" aria-label="Terminal running a Playwright test of Thato's career where every test passes">
           <div class="term-bar">
             <span class="dot red"></span>
@@ -83,6 +88,19 @@ interface TermLine {
             }
             @if (!finished()) {
               <span class="caret">▊</span>
+            }
+            @if (renderCmd()) {
+              <div class="line t-cmd">
+                <span class="prompt">$</span> {{ renderCmd() }}
+                @if (!khumoRendered()) {
+                  <span class="caret">▊</span>
+                }
+              </div>
+            }
+            @if (khumoRendered()) {
+              <div class="line t-summary">
+                <span class="check">✓</span> <strong>Khumo rendered, bottom right (0.4s)</strong>
+              </div>
             }
           </div>
         </div>
@@ -237,7 +255,6 @@ interface TermLine {
       transition: transform 0.6s var(--ease-spring), box-shadow 0.6s var(--ease-spring);
 
       &:hover {
-        transform: translateY(-4px);
         box-shadow: 0 40px 90px rgba(2, 6, 12, 0.7), 0 0 40px rgba(67, 214, 117, 0.06);
       }
     }
@@ -358,8 +375,11 @@ export class HeroComponent implements OnInit, OnDestroy {
 
   lines = signal<TermLine[]>([]);
   finished = signal(false);
+  renderCmd = signal('');
+  khumoRendered = signal(false);
 
   private zone = inject(NgZone);
+  private khumo = inject(KhumoService);
   private cdr = inject(ChangeDetectorRef);
   private timers: ReturnType<typeof setTimeout>[] = [];
 
@@ -370,6 +390,10 @@ export class HeroComponent implements OnInit, OnDestroy {
         TERMINAL_SCRIPT.map((l) => ({ ...l, done: true }) as TermLine),
       );
       this.finished.set(true);
+      // No typing theatre for reduced motion: Khumo is simply there.
+      this.renderCmd.set('npx render AI_Mascot_Khumo');
+      this.khumoRendered.set(true);
+      this.khumo.summon();
       return;
     }
     this.zone.runOutsideAngular(() => this.playLine(0));
@@ -383,6 +407,7 @@ export class HeroComponent implements OnInit, OnDestroy {
   private playLine(index: number): void {
     if (index >= TERMINAL_SCRIPT.length) {
       this.zone.run(() => this.finished.set(true));
+      this.timers.push(setTimeout(() => this.playRenderKhumo(), 1100));
       return;
     }
 
@@ -424,6 +449,29 @@ export class HeroComponent implements OnInit, OnDestroy {
         this.playLine(index + 1);
       }, delay),
     );
+  }
+
+  /** Encore after the test run: render the AI mascot into existence. */
+  private playRenderKhumo(): void {
+    const cmd = 'npx render AI_Mascot_Khumo';
+    let chars = 0;
+    const tick = () => {
+      chars++;
+      this.zone.run(() => this.renderCmd.set(cmd.slice(0, chars)));
+      if (chars < cmd.length) {
+        this.timers.push(setTimeout(tick, 26));
+      } else {
+        this.timers.push(
+          setTimeout(() => {
+            this.zone.run(() => {
+              this.khumoRendered.set(true);
+              this.khumo.summon();
+            });
+          }, 550),
+        );
+      }
+    };
+    tick();
   }
 
   scrollTo(id: string): void {
