@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 import { AI_CARDS } from '../data/resume.data';
+import { BugHostDirective } from '../shared/bug-hunt.directive';
+import { Card3dDirective } from '../shared/card3d.directive';
 import { RevealDirective } from '../shared/reveal.directive';
 import { SpotlightDirective } from '../shared/spotlight.directive';
 
 @Component({
   selector: 'app-ai-lab',
   standalone: true,
-  imports: [RevealDirective, SpotlightDirective],
+  imports: [BugHostDirective, Card3dDirective, RevealDirective, SpotlightDirective],
   template: `
     <section id="ai-lab">
       <div class="container">
@@ -24,7 +26,7 @@ import { SpotlightDirective } from '../shared/spotlight.directive';
 
         <div class="cards">
           @for (card of cards; track card.title; let i = $index) {
-            <article class="card" appReveal appSpotlight [revealDelay]="(i % 3) * 110">
+            <article class="card" appReveal appSpotlight appCard3d appBugHost [revealDelay]="(i % 3) * 110">
               <span class="icon" aria-hidden="true">{{ card.icon }}</span>
               <h3>{{ card.title }}</h3>
               <p>{{ card.body }}</p>
@@ -56,7 +58,6 @@ import { SpotlightDirective } from '../shared/spotlight.directive';
         box-shadow 0.55s var(--ease-spring);
 
       &:hover {
-        transform: translateY(-5px);
         border-color: rgba(55, 182, 255, 0.45);
         box-shadow: inset 0 1px 0 rgba(232, 240, 247, 0.04), 0 16px 44px rgba(2, 8, 16, 0.45);
 

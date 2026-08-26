@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 import { QUALIFICATIONS } from '../data/resume.data';
+import { BugHostDirective } from '../shared/bug-hunt.directive';
+import { Card3dDirective } from '../shared/card3d.directive';
 import { RevealDirective } from '../shared/reveal.directive';
 import { SpotlightDirective } from '../shared/spotlight.directive';
 
 @Component({
   selector: 'app-education',
   standalone: true,
-  imports: [RevealDirective, SpotlightDirective],
+  imports: [BugHostDirective, Card3dDirective, RevealDirective, SpotlightDirective],
   template: `
     <section id="education">
       <div class="container">
@@ -19,7 +21,7 @@ import { SpotlightDirective } from '../shared/spotlight.directive';
 
         <div class="cards">
           @for (q of quals; track q.title; let i = $index) {
-            <article class="card" appReveal appSpotlight [revealDelay]="i * 100">
+            <article class="card" appReveal appSpotlight appCard3d appBugHost [revealDelay]="i * 100">
               <span class="kind" [class.degree]="q.kind === 'degree'">
                 {{ q.kind === 'degree' ? '🎓 degree' : '✓ certified' }}
               </span>
@@ -55,7 +57,6 @@ import { SpotlightDirective } from '../shared/spotlight.directive';
         box-shadow 0.55s var(--ease-spring);
 
       &:hover {
-        transform: translateY(-5px);
         border-color: rgba(67, 214, 117, 0.4);
         box-shadow: inset 0 1px 0 rgba(232, 240, 247, 0.04), 0 16px 40px rgba(2, 8, 16, 0.4);
       }

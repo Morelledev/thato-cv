@@ -7,13 +7,15 @@ import {
   signal,
 } from '@angular/core';
 import { SKILL_GROUPS } from '../data/resume.data';
+import { BugHostDirective } from '../shared/bug-hunt.directive';
+import { Card3dDirective } from '../shared/card3d.directive';
 import { RevealDirective } from '../shared/reveal.directive';
 import { SpotlightDirective } from '../shared/spotlight.directive';
 
 @Component({
   selector: 'app-skills',
   standalone: true,
-  imports: [RevealDirective, SpotlightDirective],
+  imports: [BugHostDirective, Card3dDirective, RevealDirective, SpotlightDirective],
   template: `
     <section id="skills">
       <div class="container">
@@ -36,6 +38,8 @@ import { SpotlightDirective } from '../shared/spotlight.directive';
               [class.featured]="group.featured"
               appReveal
               appSpotlight
+              appCard3d
+              appBugHost
               [revealDelay]="gi * 100"
             >
               <header>
@@ -92,7 +96,6 @@ import { SpotlightDirective } from '../shared/spotlight.directive';
 
       &:hover {
         border-color: var(--line-bright);
-        transform: translateY(-4px);
         box-shadow: inset 0 1px 0 rgba(232, 240, 247, 0.04), var(--shadow-soft);
       }
 
