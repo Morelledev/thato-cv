@@ -49,9 +49,9 @@ const INTENTS: Intent[] = [
       `${YEARS}+ years across banking, payments and insurance: ${COMPANIES.join(', ')}. He's built ${STATS[1].value} automation frameworks from scratch. Right now he's ${CURRENT.role} at ${CURRENT.company} (${CURRENT.period}). Scroll to the Experience section for the full timeline — every entry passes. ✓`,
   },
   {
-    keys: ['discovery', 'current role', 'current job', 'right now', 'these days'],
+    keys: ['standard bank', 'ucount', 'current role', 'current job', 'right now', 'these days'],
     answer: () =>
-      `At ${CURRENT.company} since Jun 2024, Thato develops a scalable Playwright + TypeScript framework reused across teams — end-to-end web journeys with role-based locators, API checks in the same repo, and pipelines in Azure DevOps that run on every pull request. He also tracks pass-rate and flakiness metrics, and coaches junior engineers.`,
+      `At ${CURRENT.company} since Jun 2024, Thato runs a Playwright + TypeScript framework reused across teams, builds mobile flows with Maestro, and unified web, mobile and API testing behind one typed action model. He orchestrates swarms of parallel AI verification agents (a lead agent checks every finding), applies spec-driven development with Kiro, and ships it all through Azure DevOps pipelines with automated Test Closure Reports.`,
   },
   {
     keys: ['playwright vs selenium', 'selenium vs playwright', 'better than selenium', 'compare playwright'],
@@ -223,7 +223,7 @@ export const IDLE_FACTS: string[] = [
 
 /** Suggested questions surfaced as chips in the chat UI. */
 export const SUGGESTIONS = [
-  'What does Thato do at Discovery?',
+  'What does Thato do at Standard Bank?',
   'How does he use AI in testing?',
   'How do you fix flaky tests?',
   'How do I contact him?',

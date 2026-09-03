@@ -47,17 +47,19 @@ export const PROFILE = {
   cvFile: 'Thato-Morelle-Kekana-CV.pdf',
   photo: 'thato-photo.jpeg',
   summary: [
-    `I am a Senior Test Automation Engineer with strong experience building and evolving
-     automation frameworks for web, API and mobile applications. I led the development of a
-     Playwright based test framework focused on clean test architecture, reuse and long term
-     maintainability. That work covers token based authentication, data driven testing,
-     parallel execution, cross device coverage and advanced UI and visual checks.`,
-    `I build stable, scalable tests that run reliably in CI/CD pipelines on Azure DevOps,
-     helping teams release faster with more confidence. Alongside Playwright I have solid
-     hands on experience with Selenium, Cucumber, REST Assured and Appium.`,
-    `I actively use modern approaches such as the Playwright MCP test server and AI assisted
-     testing to improve coverage, speed up test creation and keep automation reliable. I am
-     detail focused, analytical, and I enjoy hard testing problems.`,
+    `I am a Senior Test Automation Engineer with 12+ years of testing experience across
+     banking, payments, insurance and loyalty rewards. I build and evolve automation
+     frameworks for web, API and mobile: Playwright and TypeScript for web, Maestro for
+     mobile, with API checks alongside, running in Azure DevOps and GitHub Actions CI/CD
+     pipelines.`,
+    `I work AI-first. I apply spec-driven development with Kiro, drive real browsers and
+     devices with AI agents through MCP servers, orchestrate swarms of parallel verification
+     agents with a lead agent checking every finding, and generate evidence-grade reports
+     and Test Closure Reports automatically.`,
+    `I design unified frameworks that bring web, mobile and API testing together behind a
+     single model, with network mocking, requirement traceability and tamper-evident
+     evidence packs. I build and continuously improve AI testing agents by equipping them
+     with reusable skills and tools, and I mentor engineers on automation best practice.`,
   ],
 };
 
@@ -79,7 +81,7 @@ export const STATS: Stat[] = [
   { value: 12, suffix: '+', label: 'years in software testing' },
   { value: 3, suffix: '', label: 'automation frameworks built from scratch' },
   { value: 3, suffix: '', label: 'ISTQB and ISEB testing certifications' },
-  { value: 7, suffix: '', label: 'companies across banking, payments and insurance' },
+  { value: 7, suffix: '', label: 'companies across banking, payments, insurance and loyalty' },
 ];
 
 export const SKILL_GROUPS: SkillGroup[] = [
@@ -89,10 +91,11 @@ export const SKILL_GROUPS: SkillGroup[] = [
     featured: true,
     skills: [
       { name: 'AI assisted test design', level: 92 },
-      { name: 'Playwright MCP server', level: 90 },
+      { name: 'Playwright & Maestro MCP servers', level: 90 },
       { name: 'AI powered failure analysis', level: 88 },
-      { name: 'AI driven test improvement', level: 87 },
-      { name: 'Agentic test workflows', level: 85 },
+      { name: 'Multi-agent test orchestration', level: 88 },
+      { name: 'Spec-driven development (Kiro)', level: 87 },
+      { name: 'Building & skilling AI agents', level: 86 },
     ],
   },
   {
@@ -100,11 +103,12 @@ export const SKILL_GROUPS: SkillGroup[] = [
     icon: '▶',
     skills: [
       { name: 'Playwright', level: 95 },
+      { name: 'Maestro (mobile)', level: 88 },
       { name: 'Selenium WebDriver', level: 85 },
       { name: 'Cucumber / BDD', level: 85 },
       { name: 'Appium (mobile)', level: 82 },
       { name: 'REST Assured / Karate', level: 80 },
-      { name: 'SoapUI / Postman', level: 85 },
+      { name: 'SoapUI / Postman / Bruno', level: 85 },
     ],
   },
   {
@@ -123,6 +127,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
     icon: '⚙',
     skills: [
       { name: 'Azure DevOps pipelines', level: 90 },
+      { name: 'GitHub Actions', level: 88 },
       { name: 'Git', level: 90 },
       { name: 'Jira & Xray', level: 88 },
       { name: 'Kibana', level: 75 },
@@ -177,16 +182,17 @@ export const AI_CARDS: AiCard[] = [
 
 export const JOBS: Job[] = [
   {
-    company: 'Discovery',
+    company: 'Standard Bank (UCount Rewards)',
     role: 'Senior Test Automation Engineer',
     period: 'Jun 2024 to Present',
     current: true,
-    tags: ['Playwright', 'TypeScript', 'Azure DevOps', 'AI testing'],
+    tags: ['Playwright', 'Maestro', 'AI agents', 'Azure DevOps'],
     bullets: [
-      'I develop and maintain a scalable Playwright and TypeScript test framework that is reused across teams.',
-      'I automate end to end web journeys with stable role based locators, plus API checks in the same repo.',
-      'Tests run continuously in Azure DevOps on every pull request and on a daily schedule, and Playwright HTML reports are published as pipeline artifacts.',
-      'I track quality with pass rate, flakiness and time to detect metrics, and coach junior engineers on clean TypeScript tests and Playwright best practice.',
+      'I develop and maintain a scalable Playwright and TypeScript test framework, reused across teams, covering public and authenticated web journeys with role based locators and API checks in the same repo.',
+      'I built a unified framework that brings web (Playwright), mobile (Maestro and Appium) and API testing together behind one typed action model, with network mocking, requirement traceability and tamper evident evidence packs.',
+      'I run requirements based testing against the bank’s documented requirements, and orchestrate swarms of parallel AI verification agents with a lead agent checking every finding before it is accepted.',
+      'I build and continuously improve AI testing agents, equipping them with reusable skills, custom tools and MCP integrations (Playwright MCP, Maestro MCP), and apply spec-driven development with Kiro.',
+      'Tests run continuously in Azure DevOps on every pull request and daily; I automate Test Closure Reports with screenshot evidence and axe accessibility checks, and coach engineers on automation best practice.',
     ],
   },
   {
